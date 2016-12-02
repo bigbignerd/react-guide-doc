@@ -72,12 +72,18 @@ var ProductTable = React.createClass({
  * @since  2016-11-23T14:46:17+0800
  */
 var SearchBar = React.createClass({
+	handleChange : function(){
+		this.props.onUserInput(
+			this.refs.filterTextInput.value, 
+			this.refs.inStockOnlyInput.checked
+		);
+	},
 	render : function(){
 		return (
 			<form>
-	        	<input type="text" placeholder="Search..." />
+	        	<input type="text" ref="filterTextInput" value={this.props.filterText} onChange={this.handleChange}  placeholder="Search..." />
 	        	<p>
-	          		<input type="checkbox" />
+	          		<input type="checkbox" ref="inStockOnlyInput" onChange={this.handleChange} checked={this.props.inStockOnly}/>
 	          		{' '}
 	          		Only show products in stock
 	        	</p>
@@ -97,10 +103,16 @@ var FilterableProductTable = React.createClass({
 			'inStockOnly' : false
 		};
 	},
+	handleUserInput : function(filterText, inStockOnly){
+		this.setState({
+			filterText : filterText,
+			inStockOnly : inStockOnly,
+		});
+	},
 	render : function(){
 		return (
 			<div>
-				<SearchBar filterText={this.state.filterText} inStockOnly={this.state.inStockOnly} />
+				<SearchBar onUserInput={this.handleUserInput} filterText={this.state.filterText} inStockOnly={this.state.inStockOnly} />
         		<ProductTable products={this.props.products}  filterText={this.state.filterText} inStockOnly={this.state.inStockOnly}/>
         	</div>
 		);
